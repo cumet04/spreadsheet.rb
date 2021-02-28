@@ -1,0 +1,16 @@
+{
+	"name": "Ruby",
+	"dockerComposeFile": "docker-compose.yml",
+	"service": "app",
+	"workspaceFolder": "/workspace",
+	"remoteUser": "vscode",
+	"postCreateCommand": "bundle",
+	"extensions": [
+		"rebornix.Ruby"
+	],
+	"settings": {
+		"editor.formatOnSave": true,
+		"ruby.useLanguageServer": true,
+		"ruby.format": "rufo"
+	}
+}
