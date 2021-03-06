@@ -8,3 +8,4 @@ gem "google-apis-sheets_v4"
 gem "google-apis-drive_v3"
 
 gem "rufo"
+gem "pry-byebug"
