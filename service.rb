@@ -11,13 +11,21 @@ module GoogleSheets
       @spreadsheet = spreadsheet
     end
 
-    def write_range(range, values, as_row: false)
+    # range: ex) "A1", "A1:C2"
+    # values: [[0,1,2], [...]]
+    # worksheet: worksheet name where the values are written. nil to first sheet
+    def write_range(range, values, worksheet: nil, as_row: false)
+      range = "#{worksheet}!#{range}" unless worksheet.nil?
       service.update_spreadsheet_value(
         spreadsheet_id: spreadsheet.spreadsheet_id,
         range: range,
         values: values,
         as_row: as_row,
       )
+    end
+
+    def worksheet_names
+      spreadsheet.sheets.map { |s| s.properties.title }
     end
   end
 
