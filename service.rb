@@ -11,6 +11,10 @@ module GoogleSheets
       @spreadsheet = spreadsheet
     end
 
+    def url
+      spreadsheet.spreadsheet_url
+    end
+
     # range: ex) "A1", "A1:C2"
     # values: [[0,1,2], [...]]
     # worksheet: worksheet name where the values are written. nil to first sheet
@@ -22,6 +26,16 @@ module GoogleSheets
         values: values,
         as_row: as_row,
       )
+    end
+
+    # value_render_option: "FORMATTED_VALUE" | "UNFORMATTED_VALUE" | "FORMULA" ; refs https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
+    def read_range(range, worksheet: nil, format: "FORMATTED_VALUE")
+      range = "#{worksheet}!#{range}" unless worksheet.nil?
+      service.get_spreadsheet_values(
+        spreadsheet_id: spreadsheet.spreadsheet_id,
+        range: range,
+        value_render_option: format,
+      ).values
     end
 
     def worksheet_names
@@ -67,6 +81,17 @@ module GoogleSheets
         range,
         Google::Apis::SheetsV4::ValueRange.new(values: values),
         value_input_option: as_row ? "RAW" : "USER_ENTERED",
+      )
+    rescue Google::Apis::ClientError => e
+      raise ApiError.new(e)
+    end
+
+    # value_render_option: "FORMATTED_VALUE" | "UNFORMATTED_VALUE" | "FORMULA" ; refs https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
+    def get_spreadsheet_values(spreadsheet_id:, range:, value_render_option:)
+      sheets_service.get_spreadsheet_values(
+        spreadsheet_id,
+        range,
+        value_render_option: value_render_option,
       )
     rescue Google::Apis::ClientError => e
       raise ApiError.new(e)
